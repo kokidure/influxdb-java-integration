@@ -74,6 +74,7 @@ public class Connection {
             WriteApiBlocking writeApi = client.getWriteApiBlocking();
             writeApi.writeMeasurement(WritePrecision.MS, m);
             flag = true;
+            LOG.info("SINGLE POINT WRITE OK");
         } catch (InfluxException e) {
             LOG.error("Error writing single point", e);
         }
@@ -95,6 +96,7 @@ public class Connection {
                 writeApi.writeMeasurements(WritePrecision.MS, mList);
                 flag = true;
             }
+            LOG.info("MULTIPLE POINTS WRITE OK");
         } catch (InfluxException e) {
             LOG.error("Error writing multiple points", e);
         }
