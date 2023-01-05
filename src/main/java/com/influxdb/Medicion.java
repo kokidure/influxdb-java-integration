@@ -5,6 +5,7 @@ import java.time.Instant;
 import com.influxdb.annotations.Column;
 import com.influxdb.annotations.Measurement;
 
+
 @Measurement(name = "medicion")
 public class Medicion {
 

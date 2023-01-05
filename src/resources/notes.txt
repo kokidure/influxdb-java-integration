@@ -1,0 +1,18 @@
+
+1. Influx docker-compose file  
+
+2. Influx web-based data explorer
+
+3. Influx basic config
+
+4. Java project 
+
+
+usuario: koki
+contraseña: iiot.PTI22
+
+PARAMETROS DE CONEXION
+url = 192.168.33.10:8086
+org = PTI-SAMR
+bucket = samr-test
+token = o3X7R83l7zN1-7jXtxbqJ9NgleFXfFEyYbvlHEcFESXDniqVLNkE-cjptaq1lzEONAS_jqbpBNSo0cVrhiY95Q==

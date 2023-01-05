@@ -1,6 +1,5 @@
 package com.influxdb;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +13,6 @@ import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.QueryApi;
 import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.WritePrecision;
-import com.influxdb.client.write.Point;
 import com.influxdb.exceptions.InfluxException;
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
@@ -37,30 +35,10 @@ public class Connection {
         this.org = org;
 
         client = buildConnection();
-
     }
 
     private InfluxDBClient buildConnection() {
         return InfluxDBClientFactory.create(getUrl(), getToken().toCharArray(), getOrg(), getBucket());
-
-    }
-
-    public boolean singlePointWrite() {
-        boolean flag = false;
-
-        Point point1 = Point.measurement("sensor").addTag("sensor_id", "TLM0103")
-                .addField("location", "Mechanical Room").addField("model_number", "TLM90012Z")
-                .time(Instant.now(), WritePrecision.MS);
-
-        try {
-            WriteApiBlocking writeApi = client.getWriteApiBlocking();
-            writeApi.writePoint(point1);
-            flag = true;
-        } catch (InfluxException e) {
-            LOG.error("Error writing single point", e);
-        }
-
-        return flag;
     }
 
     public boolean singlePointWrite(Medicion m) {
@@ -72,7 +50,7 @@ public class Connection {
 
         try {
             WriteApiBlocking writeApi = client.getWriteApiBlocking();
-            writeApi.writeMeasurement(WritePrecision.MS, m);
+            writeApi.writeMeasurement(WritePrecision.MS, m); // se guarda la medición en la bd influx
             flag = true;
             LOG.info("SINGLE POINT WRITE OK");
         } catch (InfluxException e) {
@@ -114,6 +92,7 @@ public class Connection {
             deleteApi.delete(start, end, predicate, getBucket(), getOrg());
 
             flag = true;
+            LOG.info("DATA DELETED");
         } catch (InfluxException e) {
             LOG.error("Error deleting points between " + start + " and " + end, e);
         }
@@ -124,7 +103,7 @@ public class Connection {
     public List<Medicion> queryData() {
         QueryApi queryApi = client.getQueryApi();
 
-        String flux = "from(bucket:\"" + getBucket() + "\") |> range(start:-15m) "
+        String flux = "from(bucket:\"" + getBucket() + "\") |> range(start:-60m) "
                 + "|> filter(fn: (r) => r[\"_measurement\"] == \"medicion\") "
                 + "|> sort() |> yield(name: \"sort\")";
 
@@ -139,15 +118,20 @@ public class Connection {
                  * Medicion m = new Medicion();
                  * 
                  * m.setId((Integer)r.getValueByKey("id"));
-                 * m.setIdMedidor((Integer)r.getValueByKey("id_medidor"));
+                 * m.setIdMedidor((Integer)r.getValueByKey("idMedidor"));
                  * m.setInstante((Instant)r.getValueByKey("instante"));
                  * m.setValor((Double)r.getValueByKey("valor"));
                  * 
                  * result.add(m);
                  */
 
-                LOG.info(r.getValueByKey("id_medidor") + "\t" + r.getValueByKey("valor"));
+                System.out.println(r.getValueByKey("id") + "\t" +
+                        r.getField() + "\t" +
+                        r.getValue() + "\t" +
+                        r.getTime());
+                break;
             }
+            // break;
         }
 
         return result;

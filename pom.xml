@@ -26,12 +26,12 @@
       <version>2.0.6</version>
     </dependency>
 
-
     <dependency>
       <groupId>com.influxdb</groupId>
       <artifactId>influxdb-client-java</artifactId>
       <version>6.7.0</version>
     </dependency>
+    
 
     <dependency>
       <groupId>junit</groupId>

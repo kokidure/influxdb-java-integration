@@ -1,0 +1,10 @@
+version: '3.4'
+services:
+    influxdb:
+      image: influxdb:latest
+      restart: always
+      container_name: samr-influxdb
+      volumes:
+          - $PWD/data:/var/lib/influxdb2
+      ports:
+          - "8086:8086"
